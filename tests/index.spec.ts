@@ -11,8 +11,6 @@ describe("verify", () => {
         "edsigu5npnN9QaZCNgrTMKW2YhghDzJhcp9zE69QEjAbHW9kLvtcCh2QzHLzEJ52woWjWEMW5yvqGdLpaCqUdCDMxvY7H7vARxb",
     });
 
-    console.log(message);
-
     expect(result).toBe(SignatureResult.VALID);
   });
 

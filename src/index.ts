@@ -60,10 +60,10 @@ export async function verify({
   }
 
   try {
-    const chainId = await fetch(
-      `${client.getRpcUrl()}/chains/main/chain_id`,
-    ).then((res) => res.json());
-    // const chainId = await client.getChainId();
+    // const chainId = await fetch(
+    //   `${client.getRpcUrl()}/chains/main/chain_id`,
+    // ).then((res) => res.json());
+    const chainId = await client.getChainId();
 
     let tzktUrl: string;
 
@@ -74,7 +74,7 @@ export async function verify({
     }
 
     const version: version | "unknown version" = await fetch(
-      `${tzktUrl}/v1/contracts?address=${contractAddress}`,
+      `${tzktUrl}/contracts?address=${contractAddress}`,
     )
       .then((r) => r.json())
       .then(
@@ -126,7 +126,6 @@ export async function verify({
 
     return [SignatureResult.INVALID_SIGNATURE, undefined];
   } catch (e) {
-    console.log(e);
     return [SignatureResult.RPC_ERROR, (e as Error).message];
   }
 }
