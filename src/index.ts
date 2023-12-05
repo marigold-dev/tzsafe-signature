@@ -25,28 +25,60 @@ const HASHES = {
 
 type version = (typeof HASHES)[keyof typeof HASHES];
 
+/**
+ * All the possible outcomes when you verify a signature
+ */
 export const SignatureResult = {
+  /**
+   * Something went wrong when calling the rpc: network, data deserialization, etc...
+   */
   RPC_ERROR: "RPC_ERROR",
+  /**
+   * `contractAddress` wasn't a TzSafe wallet
+   */
   NOT_TZSAFE_WALLET: "NOT_TZSAFE_WALLET",
+
+  /**
+   * The provided signature wasn't valid. It either means:
+   * - The message is not matching the signature
+   * - The person who signed the message wasn't a signer of the provided TzSafe wallet
+   */
   INVALID_SIGNATURE: "INVALID_SIGNATURE",
+  /**
+   * The signature could be verified
+   */
   VALID: "VALID",
+  /**
+   * Failed to decode the storage when retrieving the contract. It probably means that the contract wasn't a TzSafe contract
+   */
   MALFORMED_STORAGE: "MALFORMED_STORAGE",
 } as const;
 
 export type SignatureResult =
   (typeof SignatureResult)[keyof typeof SignatureResult];
 
+/** The input for the `verify` function */
+export type verifyData = {
+  messageByte: string;
+  contractAddress: `KT${string}`;
+  signature: string;
+  rpc?: `http${string}`;
+};
+
+/**
+ * Verify if a signature provided by TzSafe is valid
+ * @param verifyData All the data required to verify the signature
+ * @param {string} verifyData.messageByte A string containing the message that has been converted to bytes
+ * @param {string} verifyData.contractAddress Address of the TzSafe contract
+ * @param {string} verifyData.signature Signature returned by the user
+ * @param {string} [verifyData.rpc="https://tezos.marigold.dev"] The RPC that we'll be used to verify the wallet and retrived the signers
+ */
 export async function verify({
   messageByte,
   contractAddress,
   signature,
   rpc = DEFAULT_RPC,
-}: {
-  messageByte: string;
-  contractAddress: `KT${string}`;
-  signature: string;
-  rpc?: `http${string}`;
-}): Promise<
+}: verifyData): Promise<
   | [code: Extract<SignatureResult, "RPC_ERROR">, message: string]
   | [code: Extract<SignatureResult, "NOT_TZSAFE_WALLET">, message: undefined]
   | [code: Extract<SignatureResult, "INVALID_SIGNATURE">, message: undefined]
@@ -60,9 +92,6 @@ export async function verify({
   }
 
   try {
-    // const chainId = await fetch(
-    //   `${client.getRpcUrl()}/chains/main/chain_id`,
-    // ).then((res) => res.json());
     const chainId = await client.getChainId();
 
     let tzktUrl: string;

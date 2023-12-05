@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "doc": "typedoc src/index.ts"
   },
   "files": [
     "/dist"
@@ -16,6 +17,7 @@
     "@taquito/utils": "^17.4.0"
   },
   "devDependencies": {
+    "typedoc": "^0.25.4",
     "typescript": "^5.3.2",
     "vitest": "^0.34.6"
   }
