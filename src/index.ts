@@ -36,12 +36,6 @@ export const SignatureResult = {
 export type SignatureResult =
   (typeof SignatureResult)[keyof typeof SignatureResult];
 
-type Return =
-  | [code: Extract<SignatureResult, "RPC_ERROR">, message: string]
-  | [code: Extract<SignatureResult, "NOT_TZSAFE_WALLET">, message: undefined]
-  | [code: Extract<SignatureResult, "INVALID_SIGNATURE">, message: undefined]
-  | [code: Extract<SignatureResult, "MALFORMED_STORAGE">, message: undefined]
-  | [code: Extract<SignatureResult, "VALID">, message: undefined];
 export async function verify({
   messageByte,
   contractAddress,
@@ -49,27 +43,36 @@ export async function verify({
   rpc = DEFAULT_RPC,
 }: {
   messageByte: string;
-  contractAddress: string;
+  contractAddress: `KT${string}`;
   signature: string;
-  rpc?: string;
-}) {
+  rpc?: `http${string}`;
+}): Promise<
+  | [code: Extract<SignatureResult, "RPC_ERROR">, message: string]
+  | [code: Extract<SignatureResult, "NOT_TZSAFE_WALLET">, message: undefined]
+  | [code: Extract<SignatureResult, "INVALID_SIGNATURE">, message: undefined]
+  | [code: Extract<SignatureResult, "MALFORMED_STORAGE">, message: string]
+  | [code: Extract<SignatureResult, "VALID">, message: undefined]
+> {
   if (!client) {
     client = new RpcClient(rpc);
   } else if (client.getRpcUrl() !== rpc) {
     client = new RpcClient(rpc);
   }
 
-  const chainId = await client.getChainId();
-
-  let tzktUrl: string;
-
-  if (chainId === MAINNET_ID) {
-    tzktUrl = TZKT;
-  } else {
-    tzktUrl = GHOSTNET_TZKT;
-  }
-
   try {
+    const chainId = await fetch(
+      `${client.getRpcUrl()}/chains/main/chain_id`,
+    ).then((res) => res.json());
+    // const chainId = await client.getChainId();
+
+    let tzktUrl: string;
+
+    if (chainId === MAINNET_ID) {
+      tzktUrl = TZKT;
+    } else {
+      tzktUrl = GHOSTNET_TZKT;
+    }
+
     const version: version | "unknown version" = await fetch(
       `${tzktUrl}/v1/contracts?address=${contractAddress}`,
     )
@@ -123,6 +126,7 @@ export async function verify({
 
     return [SignatureResult.INVALID_SIGNATURE, undefined];
   } catch (e) {
+    console.log(e);
     return [SignatureResult.RPC_ERROR, (e as Error).message];
   }
 }

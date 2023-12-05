@@ -3,7 +3,7 @@ import { verify, SignatureResult } from "../src";
 
 describe("verify", () => {
   it("should validate the signature", async () => {
-    const [result, _] = await verify({
+    const [result, message] = await verify({
       messageByte:
         "05010000004254657a6f73205369676e6564204d6573736167653a206d79646170702e636f6d20323032312d30312d31345431353a31363a30345a2048656c6c6f20776f726c6421",
       contractAddress: "KT1XfFwTyoUVkZY7TT8erDaWK6UPkN87TKJn",
@@ -11,15 +11,17 @@ describe("verify", () => {
         "edsigu5npnN9QaZCNgrTMKW2YhghDzJhcp9zE69QEjAbHW9kLvtcCh2QzHLzEJ52woWjWEMW5yvqGdLpaCqUdCDMxvY7H7vARxb",
     });
 
+    console.log(message);
+
     expect(result).toBe(SignatureResult.VALID);
   });
 
   it("should fail because of rpc", async () => {
     const [result, _] = await verify({
       messageByte: "",
-      contractAddress: "",
+      contractAddress: "KT",
       signature: "",
-      rpc: "not a valid url",
+      rpc: "httpnot a valid url",
     });
 
     expect(result).toBe(SignatureResult.RPC_ERROR);
