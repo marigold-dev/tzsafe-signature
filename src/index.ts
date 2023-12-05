@@ -1,7 +1,7 @@
 import { verifySignature } from "@taquito/utils";
 import { MichelsonV1ExpressionBase, RpcClient } from "@taquito/rpc";
 
-const DEFAULT_RPC = "https://ghostnet.tezos.marigold.dev";
+const DEFAULT_RPC = "https://tezos.marigold.dev";
 const MAINNET_ID = "NetXdQprcVkpaWU";
 
 const GHOSTNET_TZKT = "https://api.ghostnet.tzkt.io/v1";

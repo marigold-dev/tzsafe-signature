@@ -9,6 +9,7 @@ describe("verify", () => {
       contractAddress: "KT1XfFwTyoUVkZY7TT8erDaWK6UPkN87TKJn",
       signature:
         "edsigu5npnN9QaZCNgrTMKW2YhghDzJhcp9zE69QEjAbHW9kLvtcCh2QzHLzEJ52woWjWEMW5yvqGdLpaCqUdCDMxvY7H7vARxb",
+      rpc: "https://ghostnet.tezos.marigold.dev",
     });
 
     expect(result).toBe(SignatureResult.VALID);
@@ -32,6 +33,7 @@ describe("verify", () => {
       contractAddress: "KT1XfFwTyoUVkZY7TT8erDaWK6UPkN87TKJn",
       signature:
         "edsigu5npnN9QaZCNgrTMKW2YhghDzJhcp9zE69QEjAbHW9kLvtcCh2QzHLzEJ52woWjWEMW5yvqGdLpaCqUdCDMxvY7H7vARxb",
+      rpc: "https://ghostnet.tezos.marigold.dev",
     });
 
     expect(result).toBe(SignatureResult.INVALID_SIGNATURE);
