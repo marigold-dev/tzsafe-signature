@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ES2015",
+    "moduleResolution": "bundler",
     "target": "es2019",
     "declaration": true,
     "outDir": "./dist"
   },
-  "include": ["src/**/*", "tests/**/*", "tests"]
+  "include": ["src/**/*", "tests/**/*"]
 }

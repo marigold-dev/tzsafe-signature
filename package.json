@@ -1,23 +1,25 @@
 {
   "name": "tzsafe-signature",
   "version": "1.0.0",
-  "description": "TODO",
+  "description": "Verifying signatures that are coming from TzSafe",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "vitest",
-    "doc": "typedoc src/index.ts"
+    "doc": "typedoc src/index.ts",
+    "prepublish": "npm run build"
   },
   "files": [
-    "/dist"
+    "/dist",
+    "readme.md"
   ],
   "dependencies": {
     "@taquito/rpc": "^17.4.0",
-    "@taquito/utils": "^17.4.0"
+    "@taquito/utils": "^17.4.0",
+    "typedoc": "^0.25.4"
   },
   "devDependencies": {
-    "typedoc": "^0.25.4",
     "typescript": "^5.3.2",
     "vitest": "^0.34.6"
   }
