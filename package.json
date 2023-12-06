@@ -1,5 +1,5 @@
 {
-  "name": "tzsafe-signature",
+  "name": "@marigold-dev/tzsafe-signature",
   "version": "1.0.0",
   "description": "Verifying signatures that are coming from TzSafe",
   "main": "dist/index.js",
