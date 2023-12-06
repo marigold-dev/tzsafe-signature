@@ -30,6 +30,10 @@ type version = (typeof HASHES)[keyof typeof HASHES];
  */
 export const SignatureResult = {
   /**
+   * Something went wrong when fetching tzkt api
+   */
+  TZKT_ERROR: "TZKT_ERROR",
+  /**
    * Something went wrong when calling the rpc: network, data deserialization, etc...
    */
   RPC_ERROR: "RPC_ERROR",
@@ -49,7 +53,8 @@ export const SignatureResult = {
    */
   VALID: "VALID",
   /**
-   * Failed to decode the storage when retrieving the contract. It probably means that the contract wasn't a TzSafe contract
+   * Failed to decode the storage when retrieving the contract. It probably means that the contract wasn't a TzSafe contract.
+   * This case shouldn't happen, so please open an issue if it happens
    */
   MALFORMED_STORAGE: "MALFORMED_STORAGE",
 } as const;
@@ -80,6 +85,7 @@ export async function verify({
   rpc = DEFAULT_RPC,
 }: verifyData): Promise<
   | [code: Extract<SignatureResult, "RPC_ERROR">, message: string]
+  | [code: Extract<SignatureResult, "TZKT_ERROR">, message: string]
   | [code: Extract<SignatureResult, "NOT_TZSAFE_WALLET">, message: undefined]
   | [code: Extract<SignatureResult, "INVALID_SIGNATURE">, message: undefined]
   | [code: Extract<SignatureResult, "MALFORMED_STORAGE">, message: string]
@@ -102,18 +108,22 @@ export async function verify({
       tzktUrl = GHOSTNET_TZKT;
     }
 
-    const version: version | "unknown version" = await fetch(
-      `${tzktUrl}/contracts?address=${contractAddress}`,
-    )
-      .then((r) => r.json())
-      .then(
-        ([{ typeHash, codeHash }]: {
-          typeHash: number;
-          codeHash: number;
-        }[]) => {
-          return HASHES[`${typeHash}:${codeHash}`] ?? "unknown version";
-        },
-      );
+    let version: version | "unknown version";
+
+    try {
+      version = await fetch(`${tzktUrl}/contracts?address=${contractAddress}`)
+        .then((r) => r.json())
+        .then(
+          ([{ typeHash, codeHash }]: {
+            typeHash: number;
+            codeHash: number;
+          }[]) => {
+            return HASHES[`${typeHash}:${codeHash}`] ?? "unknown version";
+          },
+        );
+    } catch (e) {
+      return [SignatureResult.TZKT_ERROR, (e as Error).message];
+    }
 
     if (version === "unknown version") {
       return [SignatureResult.NOT_TZSAFE_WALLET, undefined];

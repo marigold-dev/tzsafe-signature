@@ -9,6 +9,8 @@ There are 2 way of doing it:
 
 This library helps you handle the first case.
 
+**:warning: This library only supports mainnet and ghostnet**
+
 ## How to install it ?
 
 ```bash
