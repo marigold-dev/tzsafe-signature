@@ -26,7 +26,7 @@ const HASHES = {
 type version = (typeof HASHES)[keyof typeof HASHES];
 
 /**
- * All the possible outcomes when you verify a signature
+ * @enum {string} All the possible outcomes when you verify a signature
  */
 export const SignatureResult = {
   /**
